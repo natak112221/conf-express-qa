@@ -56,4 +56,5 @@ class BasePage:
 
     def logout(self):
         self.click(self.LOGOUT_BUTTON)
-        self.wait.until(EC.invisibility_of_element_located(self.CABINET_LINK))
+        # find_elements, а не invisibility_of: при переходе страницы старый элемент падает с ошибкой браузера
+        self.wait.until(lambda d: not d.find_elements(*self.CABINET_LINK))
