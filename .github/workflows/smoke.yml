@@ -1,0 +1,46 @@
+name: smoke
+on: [push, pull_request]
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    env:
+      CI: "1"
+      PORTAL_NOW: "2026-11-05 12:00"
+      PORTAL_URL: http://127.0.0.1:8102
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: natak112221/conf-express
+          path: conf-express
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: conf-express/portal/package-lock.json
+      - name: Установка портала и данных
+        working-directory: conf-express/portal
+        run: |
+          npm ci
+          npm run setup
+      - name: Запуск портала
+        working-directory: conf-express/portal
+        run: |
+          nohup node src/server.js > ../../portal.log 2>&1 &
+          for i in $(seq 1 30); do curl -sf http://127.0.0.1:8102/ > /dev/null && break; sleep 1; done
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r autotests/requirements.txt
+      - name: Смоук-тесты
+        working-directory: autotests
+        run: python -m pytest -m smoke -v --html=report.html --self-contained-html
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: smoke-report
+          path: |
+            autotests/report.html
+            autotests/failures
+            portal.log
