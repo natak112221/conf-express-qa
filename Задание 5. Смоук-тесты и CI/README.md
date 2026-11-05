@@ -39,6 +39,14 @@ python -m pytest -m smoke -v
 
 Файл `.github/workflows/smoke.yml` запускается на каждый push и pull request. Задача на `ubuntu-latest` делает по шагам: берёт этот репозиторий и репозиторий портала `conf-express`, ставит Node 22 и зависимости (`npm ci`), готовит базу (`npm run setup`), запускает портал на порту 8102, ставит Python и Selenium, запускает `pytest -m smoke` и сохраняет `report.html`, снимки падений и журнал портала как артефакт `smoke-report`. Chrome в образе `ubuntu-latest` уже есть, при `CI=1` тесты добавляют ключи `--no-sandbox` и `--disable-dev-shm-usage`. Дата для портала задана переменной `PORTAL_NOW`, чтобы мероприятия оставались «ближайшими».
 
-Первый запуск: [прогон #1](https://github.com/natak112221/conf-express-qa/actions/runs/42128422172) на коммите `78eac10`, статус Success, 36 секунд, пять смоук-тестов из пяти (`5 passed, 11 deselected in 11.30s`), артефакт `smoke-report`. Снимки: `screens/02-github-actions-прогон.png`, `screens/03-github-actions-шаги.png`.
+Прогоны:
+
+| Прогон | Коммит | Результат |
+|---|---|---|
+| [#1](https://github.com/natak112221/conf-express-qa/actions/runs/42128422172) | `78eac10` | Success, 36 с, 5 тестов из 5 (`5 passed, 11 deselected in 11.30s`) |
+| [#2](https://github.com/natak112221/conf-express-qa/actions/runs/42128927484) | `a2b1adc` | Failure: упал `test_admin_can_assign_application` |
+| [#3](https://github.com/natak112221/conf-express-qa/actions/runs/42129108948) | `0d55127` | Success, 5 из 5; повторный запуск этого же прогона ещё дважды, оба Success |
+
+В прогоне #2 тест упал в `logout()`: `invisibility_of_element_located` обратился к ссылке в шапке в момент перехода страницы, и Chrome ответил ошибкой `Node with given id does not belong to the document`. Локально тест проходил, потому что там быстрее. Заменила ожидание на `not driver.find_elements(...)`, которое при переходе не падает (`autotests/pages/base_page.py`). Снимки первого прогона: `screens/02-github-actions-прогон.png`, `screens/03-github-actions-шаги.png`.
 
 Для проверки отдельных шагов на своём компьютере запускала те же команды (портал с `PORTAL_NOW`, `pytest -m smoke --html=report.html`): 5 из 5.

@@ -31,7 +31,7 @@
 
 ## CI
 
-На каждый push смоук-тесты запускаются в GitHub Actions (`.github/workflows/smoke.yml`): [прогон #1](https://github.com/natak112221/conf-express-qa/actions/runs/42128422172), 5 тестов из 5. Подробности в задании 5.
+На каждый push смоук-тесты запускаются в GitHub Actions (`.github/workflows/smoke.yml`): последний прогон [#3](https://github.com/natak112221/conf-express-qa/actions/runs/42129108948) зелёный, 5 тестов из 5. Подробности в задании 5.
 
 ## Где проверено
 
