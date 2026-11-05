@@ -109,7 +109,7 @@ r = p.s.post(p.base + "/login", data={"login": "ivan_k", "password": "Password12
 rep.check("M-01", "отправка формы без токена отклоняется", r.status_code == 403, f"код {r.status_code}")
 p = Portal()
 r = p.s.post(p.base + "/login", data={"login": "a" * 200000, "password": "x", "_csrf": "x"}, allow_redirects=False)
-rep.check("M-02", "слишком большое тело запроса даёт 413", r.status_code == 413, f"код {r.status_code}")
+rep.check("M-02", "слишком большое тело запроса даёт 413 и страницу ошибки сайта", r.status_code == 413 and "Слишком большой запрос" in r.text, f"код {r.status_code}")
 r = Portal().get("/events/%E0%A4%A")
 rep.check("M-03", "неверно закодированный адрес даёт 4xx, а не 500", 400 <= r.status_code < 500, f"код {r.status_code}")
 
