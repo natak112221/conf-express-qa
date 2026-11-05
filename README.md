@@ -2,6 +2,8 @@
 
 Тестирование учебного портала «Конференции.РФ» (МДК.05.03). Сам портал в репозитории [conf-express](https://github.com/natak112221/conf-express). Работа выполнена в ноябре 2026: задания 1-3, дополнительные 4 и 5. Отчёт: `Отчет МДК.05.03.docx`.
 
+[![smoke](https://github.com/natak112221/conf-express-qa/actions/workflows/smoke.yml/badge.svg)](https://github.com/natak112221/conf-express-qa/actions/workflows/smoke.yml)
+
 ## Папки
 
 | Папка | Что внутри |
@@ -10,7 +12,8 @@
 | `Задание 2. Анализ запросов в DevTools` | разбор GET и POST входа на чужом сайте и на своём портале, снимки DevTools |
 | `Задание 3. Тестирование форм` | `check_forms.py` (45 проверок по классам эквивалентности и границам), таблицы результатов |
 | `Задание 4. Автотест входа (Selenium)` | описание, снимки; код в `autotests` |
-| `Задание 5. Смоук-тесты и CI` | 5 смоук-тестов, описание CI, текст `smoke.yml`, снимки |
+| `Задание 5. Смоук-тесты и CI` | 5 смоук-тестов, описание CI и первого прогона, снимки |
+| `.github/workflows` | `smoke.yml`: запуск смоук-тестов в GitHub Actions |
 | `autotests` | Selenium и pytest: `pages` (Page Object), `tests` (вход, смоук, тесты на найденные ошибки), `conftest.py` |
 | `tools` | клиент для проверок запросами |
 
@@ -26,8 +29,10 @@
 
 Адрес портала меняется переменной `PORTAL_URL`, окно браузера включается `HEADLESS=0`.
 
-## Что не сделано или не проверено
+## CI
 
-- GitHub Actions: файл `smoke.yml` подготовлен, но запуск в Actions не проверялся (токену не хватило права `workflow`), подробности в задании 5.
-- Firefox, Safari и телефон с настоящим экраном не проверялись: браузеры Chrome 156 и Edge 156 (Edge только в практике 10 портала), телефон только в эмуляции Chrome.
-- Кроссбраузерные и кроссплатформенные матрицы, Charles, Puppeteer и Figma не выполнялись (в задании их нет).
+На каждый push смоук-тесты запускаются в GitHub Actions (`.github/workflows/smoke.yml`): [прогон #1](https://github.com/natak112221/conf-express-qa/actions/runs/42128422172), 5 тестов из 5. Подробности в задании 5.
+
+## Где проверено
+
+Chrome 156 (Selenium 4.51) на Windows 11 и Chrome на `ubuntu-latest` в GitHub Actions; Edge 156 использовала только в практике 10 портала, телефон в эмуляции Chrome. Firefox и Safari не запускала.
